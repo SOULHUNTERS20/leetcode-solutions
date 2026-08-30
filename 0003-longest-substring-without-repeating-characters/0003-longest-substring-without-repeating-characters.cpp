@@ -1,17 +1,19 @@
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-        vector<int> lastSeen(128, -1);   // ASCII char -> last index it appeared
-        int best = 0, left = 0;
+        unordered_set<char> window;
+        int left = 0;
+        int ans = 0;
 
         for (int right = 0; right < s.size(); right++) {
-            char c = s[right];
-            if (lastSeen[c] >= left)     // repeat, and it's inside our window
-                left = lastSeen[c] + 1;
-
-            lastSeen[c] = right;
-            best = max(best, right - left + 1);
+            while (window.find(s[right]) != window.end()) {
+                window.erase(s[left]);
+                left++;
+            }
+            window.insert(s[right]);
+            ans = max(ans, right - left + 1);
         }
-        return best;
+
+        return ans;
     }
 };
